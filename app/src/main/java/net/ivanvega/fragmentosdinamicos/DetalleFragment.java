@@ -1,11 +1,13 @@
 package net.ivanvega.fragmentosdinamicos;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -113,7 +115,6 @@ public class DetalleFragment extends Fragment
               setInfoLibro(0, layout);
           }
 
-
         return layout;
     }
 
@@ -123,15 +124,13 @@ public class DetalleFragment extends Fragment
         lblTitulo = layout.findViewById(R.id.titulo);
         lblAutor = layout.findViewById(R.id.autor);
         imvPortada = layout.findViewById(R.id.portada);
+        String uri = libro.getUrl();
 
         lblTitulo.setText(libro.getTitulo());
         lblAutor.setText(libro.getAutor());
         imvPortada.setImageResource(libro.getRecursoImagen());
 
-        if( mediaPlayer!= null){
-            mediaPlayer.release();
-        }
-
+        /*if( mediaPlayer== null){
             mediaPlayer = new MediaPlayer();
             mediaController = new MediaController(getActivity());
             mediaPlayer.setOnPreparedListener(this);
@@ -143,25 +142,34 @@ public class DetalleFragment extends Fragment
                 e.printStackTrace();
             }
 
+        }*/
+
+        Intent intent = new Intent(getActivity(), Servicio.class);
+        intent.putExtra("uri", libro.getUrl());
+        intent.putExtra("titulo", libro.getUrl());
+        getActivity().startService(intent);
+
     }
 
 
 
     public void setInfoLibro(int pos) {
 
-        this.setInfoLibro(pos,getView()    );
+        this.setInfoLibro(pos,getView() );
     }
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
 
+        Log.d("Audiolibros","Entramos en OnPrepared de Media Player");
+        /*mediaPlayer.start();
         mediaController.setMediaPlayer(this);
         mediaController.setAnchorView(
                 getView().findViewById(R.id.fragment_detalle_layout_root));
         mediaController.setEnabled(true);
+        mediaController.setPadding(0,0,0,110);
         mediaController.show();
-        mediaPlayer.start();
-
+        */
 
     }
 
@@ -228,8 +236,8 @@ public class DetalleFragment extends Fragment
 
     @Override
     public void onStop() {
-        mediaPlayer.stop();
-        mediaPlayer.release();
+        //mediaPlayer.stop();
+        //mediaPlayer.release();
         super.onStop();
     }
 }
